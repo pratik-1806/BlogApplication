@@ -2,14 +2,21 @@ import { useState, useEffect } from "react"
 import styles from "./Blogpage.module.css"
 
 export default function Blog() {
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
+  const[formData, setFormData]= useState({title:"",content:""});
+  // const [title, setTitle] = useState("");
+  // const [content, setContent] = useState("");
   const [Blogs, setBlogs]= useState([]);
 
   function handleSubmit(e) {
-    setBlogs([{title,content},...Blogs])
+    setBlogs([{title:formData.title, content:formData.content},...Blogs]);
+    setFormData({title:"",content:""});
+    
     console.log(Blogs)
     e.preventDefault();
+  }
+
+  function  removeBlog(i){
+    setBlogs(Blogs.filter((Blog,index)=>i!==index))
   }
 
 
@@ -23,16 +30,16 @@ export default function Blog() {
             <label htmlFor="blogTitle">Blog Title:</label>
             <input type="text" id="blogTitle" name="blogTitle"
               placeholder="Enter the title here...."
-              value={title}
-              onChange={(e) => setTitle(e.target.value)} />
+              value={formData.title}
+              onChange={(e) => setFormData({title:e.target.value, content:formData.content})} />
           </div>
           <hr />
           <div className={styles.formGroup}>
             <label htmlFor="blogContent">Blog Content:</label>
             <textarea id="blogContent" name="blogContent" rows="5"
               placeholder="Blog content goes here...."
-              value={content}
-              onChange={(e) => setContent(e.target.value)}>
+              value={formData.content}
+              onChange={(e) => setFormData({title:formData.title,content:e.target.value})}>
 
             </textarea>
           </div>
@@ -42,10 +49,11 @@ export default function Blog() {
       </div>
       <hr />
       <h2>Blogs</h2>
-      {Blogs.map((e)=>{
+      {Blogs.map((e,i)=>{
         return(
-        <><h3 className={styles.title}>{e.title}</h3>
-        <p className={styles.content}>{e.content}</p>
+        <><h3 className={styles.title} key={i}>{e.title}</h3>
+        <p className={styles.content} key={i}>{e.content}</p>
+        <button className={styles.btn} onClick={()=>{removeBlog(i)}}>Remove</button>
         <hr/></>
         
         )
